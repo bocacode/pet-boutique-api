@@ -2,7 +2,7 @@ const admin = require('firebase-admin')
 const credentials = require('../credentials.json')
 
 function connectDb() {
-    if(!admin.apps.length){
+    if (!admin.apps.length) {
         admin.initializeApp({
             credential: admin.credential.cert(credentials)
         })
@@ -24,7 +24,7 @@ exports.getCustomers = (request, response) => {
 }
 
 exports.getCustomerById = (request, response) => {
-    if(!request.params.customerId) {
+    if (!request.params.customerId) {
         response.status(400).send('Bad request')
         return
     }
@@ -59,4 +59,14 @@ exports.getCustomerByQuery = (req, res) => {
             res.send(matches)
         })
         .catch(err => res.status(500).send(err))
+}
+
+// create post to createCustomer
+exports.createCustomer = (req, res) => {
+    const db = connectDb() // connect to db
+
+    db.collection('customers')
+        .add(req.body)
+        .then(docRef => res.send(docRef.id))
+        .catch(err => res.status(500).send('Customer could not be created'))
 }
