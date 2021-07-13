@@ -14,7 +14,11 @@ exports.getCustomers = (request, response) => {
     const db = connectDb()
     db.collection('customers').get()
         .then(customerCollection => {
-            const allCustomers = customerCollection.docs.map(doc => doc.data())
+            const allCustomers = customerCollection.docs.map(doc => {
+                let cust = doc.data()
+                cust.id = doc.id
+                return cust
+            })
             response.send(allCustomers)
         })
         .catch(err => {
@@ -40,7 +44,6 @@ exports.getCustomerById = (request, response) => {
             response.status(500).send(err)
         })
 }
-
 
 exports.getCustomerByQuery = (req, res) => {
     // get query from req.query
@@ -69,4 +72,12 @@ exports.createCustomer = (req, res) => {
         .add(req.body)
         .then(docRef => res.send(docRef.id))
         .catch(err => res.status(500).send('Customer could not be created'))
+}
+
+exports.deleteCustomer = (req, res) => {
+    const db = connectDb()
+    const { docId } = req.params
+    db.collection('customers').doc(docId).delete()
+        .then(() => res.status(203).send('Document successfully deleted'))
+        .catch(err => res.status(500).send(err))
 }
