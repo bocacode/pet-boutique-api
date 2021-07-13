@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const { getCustomers, getCustomerById, getCustomerByQuery,
-        createCustomer, deleteCustomer } = require('./src/customers')
+    createCustomer, deleteCustomer, updateCustomer } = require('./src/customers')
 
 const app = express()
 app.use(express.json())
@@ -13,7 +13,9 @@ app.get('/customers', getCustomers)
 
 app.post('/customers', createCustomer)
 
-app.delete('/customers/:docId', deleteCustomer)
+app.patch('/customer/:docId', updateCustomer)
+
+app.delete('/customer/:docId', deleteCustomer)
 
 // app.patch('/customers/:customerId', getCustomerById)
 
